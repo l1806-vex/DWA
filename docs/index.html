@@ -5,13 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DWA - DeepSeek Web API docs</title>
   <meta name="description" content="Setup and usage docs for DWA, a Go binary that exposes the OpenAI and Anthropic chat APIs on top of the DeepSeek web app.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- icon sprite (Lucide) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L21 5"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+  <symbol id="i-network" viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></symbol>
+</svg>
+
 <div class="wrap">
 
   <aside class="sidebar">
-    <div class="brand">D<span>W</span>A</div>
+    <div class="brand">DWA</div>
     <div class="tag">DeepSeek Web API</div>
     <nav>
       <div class="group">Start</div>
@@ -33,123 +50,95 @@
   <main>
     <h1>DWA</h1>
     <p class="lead">A single Go binary that exposes the OpenAI and Anthropic chat APIs on top of the DeepSeek web app.</p>
-    <div class="badges">
-      <span class="badge">Go 1.22+</span>
-      <span class="badge">WASM / wazero</span>
-      <span class="badge">OpenAI compatible</span>
-      <span class="badge">Anthropic compatible</span>
-    </div>
 
     <h2 id="overview">Overview</h2>
     <p>DWA talks to the unofficial <code>chat.deepseek.com</code> web API and re-exposes it through two standard interfaces:</p>
-    <ul>
-      <li><b>OpenAI</b> &nbsp;<code>POST /v1/chat/completions</code></li>
-      <li><b>Anthropic</b> &nbsp;<code>POST /v1/messages</code></li>
+    <ul class="check">
+      <li><svg class="ic"><use href="#i-check"/></svg><span><b>OpenAI</b> &nbsp;<code>POST /v1/chat/completions</code></span></li>
+      <li><svg class="ic"><use href="#i-check"/></svg><span><b>Anthropic</b> &nbsp;<code>POST /v1/messages</code></span></li>
     </ul>
     <p>Point any OpenAI or Anthropic SDK at <code>http://127.0.0.1:8000</code> and it works. Streaming and non-streaming are both supported, and the proof-of-work challenge the web app requires is solved locally with the original WASM module.</p>
 
     <h2 id="how">How it works</h2>
     <div class="flow">
       <div class="box"><b>Your client</b><span>OpenAI / Anthropic SDK</span></div>
-      <div class="arrow">&rarr;</div>
+      <div class="arrow"><svg class="ic"><use href="#i-arrow"/></svg></div>
       <div class="box"><b>DWA</b><span>translate + solve POW</span></div>
-      <div class="arrow">&rarr;</div>
+      <div class="arrow"><svg class="ic"><use href="#i-arrow"/></svg></div>
       <div class="box"><b>chat.deepseek.com</b><span>SSE stream</span></div>
     </div>
     <p>Each request fetches a POW challenge and a HIF token in parallel, solves the challenge through <code>sha3_pow.wasm</code>, then streams the completion back and converts it to the format the client asked for. Conversations reuse a cached DeepSeek session so multi-turn chats keep their context.</p>
 
     <h2 id="requirements">Requirements</h2>
-    <ul>
-      <li>Go 1.22 or newer</li>
-      <li>A DeepSeek account (used only to obtain a session token)</li>
+    <ul class="check">
+      <li><svg class="ic"><use href="#i-check"/></svg><span>Go 1.22 or newer</span></li>
+      <li><svg class="ic"><use href="#i-check"/></svg><span>A DeepSeek account, used only to obtain a session token</span></li>
     </ul>
 
     <hr>
 
-    <h2 id="token">Setup: 1. Get your token</h2>
-    <p>The token is the <code>Bearer</code> value the web app sends with each request. It is not a cookie, so you have to read it from the request headers.</p>
+    <h2 id="token"><svg class="ic" style="font-size:19px;color:var(--accent)"><use href="#i-key"/></svg>&nbsp; Setup: 1. Get your token</h2>
+    <p>The token is the <code>Bearer</code> value the web app sends with each request. It is not a cookie, so you read it from the request headers.</p>
 
     <div class="step">
       <div class="num">1</div>
       <div class="body">
-        <p style="margin:0">Log in at <a href="https://chat.deepseek.com" target="_blank" rel="noopener">chat.deepseek.com</a> and send any message.</p>
+        <p style="margin:0">Log in at <a href="https://chat.deepseek.com" target="_blank" rel="noopener">chat.deepseek.com <svg class="ic" style="font-size:0.85em"><use href="#i-ext"/></svg></a> and send any message.</p>
       </div>
     </div>
     <div class="step">
       <div class="num">2</div>
       <div class="body">
-        <p style="margin:0">Open DevTools with <code>F12</code>, go to the <b>Network</b> tab, and find the request named <code>completion</code>.</p>
+        <p style="margin:0">Open DevTools with <code>F12</code>, go to the <b>Network</b> tab, and click the request named <code>completion</code>.</p>
       </div>
     </div>
     <div class="step">
       <div class="num">3</div>
       <div class="body">
-        <p style="margin:0 0 12px">Open <b>Headers</b> and copy the value after <code>Authorization: Bearer</code>.</p>
-
+        <p style="margin:0 0 12px">Under <b>Headers</b>, copy the value after <code>Authorization: Bearer</code>.</p>
         <figure>
-          <div class="window devtools">
-            <div class="titlebar">
-              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-              <span class="label">DevTools - chat.deepseek.com</span>
-            </div>
-            <div class="tabs">
-              <span class="t">Elements</span>
-              <span class="t">Console</span>
-              <span class="t active">Network</span>
-              <span class="t">Sources</span>
-            </div>
-            <div class="panes">
-              <div class="reqlist">
-                <div class="row">create_pow_challenge</div>
-                <div class="row sel">completion</div>
-                <div class="row">query</div>
-                <div class="row">chat_session/fetch</div>
-              </div>
-              <div class="headers">
-                <p class="group2">Request Headers</p>
-                <div><span class="hk">accept:</span> */*</div>
-                <div><span class="hk">authorization:</span> Bearer <span class="hl">Y+bk78sIbzuP...eulK</span></div>
-                <div><span class="hk">content-type:</span> application/json</div>
-                <div><span class="hk">x-client-platform:</span> web</div>
-              </div>
+          <div class="shot">
+            <div class="bar"><svg class="ic"><use href="#i-network"/></svg> DevTools / Network / Headers</div>
+            <div class="frame">
+              <img src="images/auth-token.png" alt="DevTools Headers panel showing the Authorization Bearer token outlined in red">
             </div>
           </div>
-          <figcaption>Network tab with the <code>completion</code> request selected. The highlighted value is your token.</figcaption>
+          <figcaption>The value boxed in red is your token. Copy everything after <code>Bearer</code>.</figcaption>
         </figure>
       </div>
     </div>
 
     <div class="note warn">
-      The token belongs to your session and expires over time. When requests start failing with <code>40003 invalid token</code>, grab a fresh one the same way.
+      <svg class="ic"><use href="#i-alert"/></svg>
+      <span>The token belongs to your session and expires over time. When requests start failing with <code>40003 invalid token</code>, grab a fresh one the same way.</span>
     </div>
 
-    <h2 id="configure">Setup: 2. Configure</h2>
+    <h2 id="configure"><svg class="ic" style="font-size:19px;color:var(--accent)"><use href="#i-sliders"/></svg>&nbsp; Setup: 2. Configure</h2>
     <p>Copy the template and paste your token in:</p>
     <pre><code>cp .env.example .env</code></pre>
     <p>Then edit <code>.env</code>:</p>
     <pre><code>DEEPSEEK_TOKEN=your_token_here
 HOST=127.0.0.1
 PORT=8000</code></pre>
-    <div class="note"><code>.env</code> is gitignored, so your token never lands in version control.</div>
+    <div class="note">
+      <svg class="ic"><use href="#i-info"/></svg>
+      <span><code>.env</code> is gitignored, so your token never lands in version control.</span>
+    </div>
 
-    <h2 id="run">Setup: 3. Run</h2>
+    <h2 id="run"><svg class="ic" style="font-size:19px;color:var(--accent)"><use href="#i-terminal"/></svg>&nbsp; Setup: 3. Run</h2>
     <p>From the project root:</p>
     <pre><code>go run .</code></pre>
     <p>On Windows you can double-click <code>start.bat</code> instead. It builds the binary into <code>bin/</code> and launches it.</p>
-
     <figure>
-      <div class="window terminal">
-        <div class="titlebar">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="label">dwa</span>
-        </div>
-        <div>
+      <div class="terminal">
+        <div class="bar"><svg class="ic"><use href="#i-terminal"/></svg> bash</div>
+        <div class="out">
           <div><span class="prompt">$</span> go run .</div>
           <div>&nbsp;</div>
-          <div><span class="accent2">DWA - DeepSeek Web API</span></div>
-          <div><span class="muted2">OpenAI:   </span> http://127.0.0.1:8000/v1/chat/completions</div>
-          <div><span class="muted2">Anthropic:</span> http://127.0.0.1:8000/v1/messages</div>
-          <div><span class="muted2">Models:   </span> http://127.0.0.1:8000/v1/models</div>
+          <div><span class="hl">DWA - DeepSeek Web API</span></div>
+          <div><span class="dim">OpenAI:   </span> http://127.0.0.1:8000/v1/chat/completions</div>
+          <div><span class="dim">Anthropic:</span> http://127.0.0.1:8000/v1/messages</div>
+          <div><span class="dim">Models:   </span> http://127.0.0.1:8000/v1/models</div>
         </div>
       </div>
       <figcaption>Server output once it is up.</figcaption>
@@ -157,7 +146,7 @@ PORT=8000</code></pre>
 
     <hr>
 
-    <h2 id="endpoints">Endpoints</h2>
+    <h2 id="endpoints"><svg class="ic" style="font-size:19px;color:var(--accent)"><use href="#i-plug"/></svg>&nbsp; Endpoints</h2>
     <table>
       <thead><tr><th>Method</th><th>Path</th><th>Format</th><th>Notes</th></tr></thead>
       <tbody>
@@ -231,9 +220,7 @@ data: [DONE]</code></pre>
       <li>Tool calls go through a small XML convention and are parsed back out, so behaviour depends on the model following the format.</li>
     </ul>
 
-    <footer>
-      DWA documentation. Source on the project repository. Uses an unofficial DeepSeek API for personal use.
-    </footer>
+    <footer>DWA documentation. Unofficial DeepSeek API, for personal use.</footer>
   </main>
 
 </div>
