@@ -2,7 +2,7 @@
 .env
 
 # Build artifacts
-dwa.exe
+bin/
 *.exe
 
 # Local tooling settings

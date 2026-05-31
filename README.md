@@ -149,8 +149,9 @@ curl http://127.0.0.1:8000/v1/messages \
 DWA/
 ├── main.go                 entry point: loads .env, parses flags, starts server
 ├── sha3_pow.wasm           the POW module from the DeepSeek web app
-├── start.bat               Windows launcher (builds then runs)
+├── start.bat               Windows launcher (builds into bin/ then runs)
 ├── .env.example            token template
+├── bin/                    compiled binary lands here (gitignored)
 └── internal/
     ├── pow/                WASM proof-of-work solver (wazero)
     ├── client/             DeepSeek HTTP client, sessions, SSE streaming

@@ -1,37 +1,37 @@
 @echo off
-title DWA — DeepSeek Web API
+title DWA - DeepSeek Web API
 
 cd /d "%~dp0"
 
 echo.
 echo  +------------------------------------------+
-echo  ^|   DWA — DeepSeek Web API  ^|  v1.0.0      ^|
+echo  ^|   DWA - DeepSeek Web API  ^|  v1.0.0      ^|
 echo  +------------------------------------------+
-echo  ^|  OpenAI :  http://127.0.0.1:8000/v1      ^|
+echo  ^|  OpenAI :   http://127.0.0.1:8000/v1     ^|
 echo  ^|  Anthropic: http://127.0.0.1:8000/v1     ^|
 echo  +------------------------------------------+
 echo.
 
 where go >nul 2>&1
 if errorlevel 1 (
-    echo [BLAD] Nie znaleziono Go. Zainstaluj Go 1.22+ i dodaj do PATH.
+    echo [ERROR] Go not found. Install Go 1.22+ and add it to PATH.
     pause
     exit /b 1
 )
 
-if not exist dwa.exe (
-    echo [INFO] Buduje binarkę...
-    go build -o dwa.exe .
+if not exist bin\dwa.exe (
+    echo [INFO] Building binary...
+    go build -o bin\dwa.exe .
     if errorlevel 1 (
-        echo [BLAD] Build nie powiodł się.
+        echo [ERROR] Build failed.
         pause
         exit /b 1
     )
 )
 
-dwa.exe %*
+bin\dwa.exe %*
 if errorlevel 1 (
     echo.
-    echo [BLAD] Serwer zakończył się błędem.
+    echo [ERROR] Server exited with an error.
     pause
 )
