@@ -13,7 +13,11 @@ A single Go binary that exposes the OpenAI and Anthropic chat APIs on top of the
 
 <br>
 
-<img src="docs/images/demo.svg" alt="DWA terminal demo: starting the server and calling the OpenAI and Anthropic endpoints with curl" width="680">
+https://github.com/l1806-vex/DWA/raw/main/docs/images/demo.mp4
+
+<video src="https://github.com/l1806-vex/DWA/raw/main/docs/images/demo.mp4" poster="docs/images/demo-poster.png" controls muted width="680"></video>
+
+<sub>Real capture: live server, real <code>curl</code> calls to both endpoints. <a href="docs/images/demo.mp4">Download the MP4</a>.</sub>
 
 </div>
 
