@@ -11,6 +11,10 @@ A single Go binary that exposes the OpenAI and Anthropic chat APIs on top of the
 ![License](https://img.shields.io/badge/license-see%20LICENSE-lightgrey)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-blue)
 
+<br>
+
+<img src="docs/images/demo.svg" alt="DWA terminal demo: starting the server and calling the OpenAI and Anthropic endpoints with curl" width="680">
+
 </div>
 
 ---
