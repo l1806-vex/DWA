@@ -54,9 +54,6 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("/v1/models", s.handleModels)
 	s.mux.HandleFunc("/v1/chat/completions", s.handleChatCompletions)
 	s.mux.HandleFunc("/v1/messages", s.handleMessages)
-	s.mux.HandleFunc("/v1/auth/token", s.handleAuthToken)
-	s.mux.HandleFunc("/v1/organizations", s.handleOrganizations)
-	s.mux.HandleFunc("/", s.handleCatchAll)
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -160,26 +157,6 @@ func (s *Server) handleModels(w http.ResponseWriter, r *http.Request) {
 			map[string]any{"id": modelDisplay, "object": "model", "created": now, "owned_by": "deepseek"},
 		},
 	})
-}
-
-// ── /v1/auth/token ────────────────────────────────────────────────────────────
-
-func (s *Server) handleAuthToken(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]any{"access_token": "proxy", "token_type": "bearer"})
-}
-
-// ── /v1/organizations ─────────────────────────────────────────────────────────
-
-func (s *Server) handleOrganizations(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]any{
-		"data": []any{map[string]any{"id": "org-deepseek", "name": "DeepSeek Proxy"}},
-	})
-}
-
-// ── catch-all ─────────────────────────────────────────────────────────────────
-
-func (s *Server) handleCatchAll(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]any{"object": "ok", "path": r.URL.Path})
 }
 
 // ── /v1/chat/completions ─────────────────────────────────────────────────────

@@ -8,17 +8,8 @@ import (
 	"time"
 )
 
+
 // ── OpenAI / Anthropic → DeepSeek prompt ─────────────────────────────────────
-
-var claudeRe = regexp.MustCompile(`(?i)You are Claude[^\n]*`)
-
-func stripClaudeIdentity(system string) string {
-	replaced := claudeRe.ReplaceAllString(system, "You are DeepSeek, an AI assistant.")
-	if replaced == system {
-		return system + "\n\nYou are DeepSeek, an AI assistant."
-	}
-	return replaced
-}
 
 func injectTools(system string, tools []map[string]any) string {
 	if len(tools) == 0 {
@@ -47,8 +38,7 @@ func MessagesToPrompt(messages []map[string]any, tools []map[string]any) (string
 
 	for _, m := range messages {
 		if m["role"] == "system" {
-			sys := extractText(m["content"])
-			systemParts = append(systemParts, stripClaudeIdentity(sys))
+			systemParts = append(systemParts, extractText(m["content"]))
 			break
 		}
 	}
