@@ -13,11 +13,13 @@ A single Go binary that exposes the OpenAI and Anthropic chat APIs on top of the
 
 <br>
 
-https://github.com/l1806-vex/DWA/raw/main/docs/images/demo.mp4
+<!-- To get a native inline player: edit this file on github.com and drag-drop
+     docs/images/demo.mp4 onto the line below; GitHub inserts a video player.
+     You can then remove the poster link beneath it. -->
 
-<video src="https://github.com/l1806-vex/DWA/raw/main/docs/images/demo.mp4" poster="docs/images/demo-poster.png" controls muted width="680"></video>
+<a href="docs/images/demo.mp4"><img src="docs/images/demo-poster.png" width="680" alt="DWA terminal demo - click to play"></a>
 
-<sub>Real capture: live server, real <code>curl</code> calls to both endpoints. <a href="docs/images/demo.mp4">Download the MP4</a>.</sub>
+<sub>Real capture: the live server answering real <code>curl</code> calls to both endpoints. <a href="docs/images/demo.mp4">Play / download the MP4</a>.</sub>
 
 </div>
 
