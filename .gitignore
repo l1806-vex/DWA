@@ -1,0 +1,12 @@
+# Secrets - never commit a real token
+.env
+
+# Build artifacts
+dwa.exe
+*.exe
+
+# Local tooling settings
+.claude/
+
+# Internal working documents
+docs/superpowers/
